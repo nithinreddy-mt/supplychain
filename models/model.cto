@@ -1,44 +1,110 @@
 namespace org.supplychain.basic
-/*
-	there are three imp things in composer. asset, participant, transaction, 
-    (4th one is event which u can understand later)
-    
-    asset is basically anything which is valuable or tangible, some item which u are planning to sell or buy.
-    or some valuable thing in the system, in a research community, research paper becomes asset.
-    
-    participant - the ones who interact with the system
-    transaction - used record the changes in the system. Ex: transfer of ownership, acknowledging the receipt of item,
-    complaing about some faulty good etc
-*/
 
-/*
-	--> implies that the property is used to reference the object which is created elsewhere
-    o implies the property which is created within the current definition
-    identified implies the unique property which can be used to identify the object
-*/
-asset Product identified by productId {
-  o String productId
+enum ShipmentStatus {
+  o IN_TRANSIT
+  o DELIVERED
+  o LOST
+}
+
+abstract asset Item {
+}
+
+asset Product identified by gtin extends Item {
+  o String gtin
   o String name
-  --> SupplyChainMember owner
+}
+
+asset RawMaterial identified by id extends Item {
+  	o String id 
+    o String name
 }
 
 participant SupplyChainMember identified by id {
   o String id
   o String firstName
   o String lastName
+  o Location location
 }
 
-/*
-this definition uses both --> properties, that means this is not creating those objects, it is just making use 
-of the existing object to just capture a change in the system
-*/ 
-transaction TransferOwnership {
-  --> Product product
-  --> SupplyChainMember newOwner
+concept Stock {
+  o String itemId
+  o Integer quantity
 }
 
-event OnwerShipTransferedEvent {
-  --> Product product
-  --> SupplyChainMember oldOwner
-  --> SupplyChainMember newOwner
+
+participant Supplier extends SupplyChainMember {
+  o Stock []items
 }
+
+participant Manufacturer extends SupplyChainMember {
+  o Stock []items
+}
+
+participant Distributor extends SupplyChainMember {
+  o Stock []items
+}
+
+participant Retailer extends SupplyChainMember {
+  o Stock []items
+}
+
+participant Customer extends SupplyChainMember {
+  o Stock []items
+}
+
+participant Auditor extends SupplyChainMember {
+}
+
+asset Location identified by locationId{
+  o String locationId
+  o String city
+  o String zipcode
+}
+
+
+asset Shipment identified by shipmentId {
+  o String shipmentId
+  o ShipmentStatus status optional
+  o Stock []stock
+  --> Location currentLocation
+  --> Location fromLocation
+  --> Location tofromLocation
+  --> SupplyChainMember seller optional
+  --> SupplyChainMember buyer optional
+}
+
+transaction SellRawMaterialToManufacturer {
+  o Shipment shipment
+  --> Supplier seller
+  --> Manufacturer buyer
+}
+
+transaction SellProductToDistributor {
+  o Shipment shipment
+  --> Distributor buyer
+  --> Manufacturer seller
+}
+
+transaction SellProductToRetailer {
+  o Shipment shipment
+  --> Distributor seller
+  --> Retailer buyer
+}
+
+transaction SellProductToCustomer {
+  o Shipment shipment
+  --> Retailer seller
+  --> Customer buyer
+}
+
+transaction AcknowledgeShipmentDelivery {
+  --> Shipment shipment
+  --> SupplyChainMember acknowledgedBy
+}
+
+transaction ReportShipmentLost {
+  --> Shipment shipment
+  --> SupplyChainMember acknowledgedBy
+}
+
+
