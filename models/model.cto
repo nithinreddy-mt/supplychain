@@ -1,0 +1,44 @@
+namespace org.supplychain.basic
+/*
+	there are three imp things in composer. asset, participant, transaction, 
+    (4th one is event which u can understand later)
+    
+    asset is basically anything which is valuable or tangible, some item which u are planning to sell or buy.
+    or some valuable thing in the system, in a research community, research paper becomes asset.
+    
+    participant - the ones who interact with the system
+    transaction - used record the changes in the system. Ex: transfer of ownership, acknowledging the receipt of item,
+    complaing about some faulty good etc
+*/
+
+/*
+	--> implies that the property is used to reference the object which is created elsewhere
+    o implies the property which is created within the current definition
+    identified implies the unique property which can be used to identify the object
+*/
+asset Product identified by productId {
+  o String productId
+  o String name
+  --> SupplyChainMember owner
+}
+
+participant SupplyChainMember identified by id {
+  o String id
+  o String firstName
+  o String lastName
+}
+
+/*
+this definition uses both --> properties, that means this is not creating those objects, it is just making use 
+of the existing object to just capture a change in the system
+*/ 
+transaction TransferOwnership {
+  --> Product product
+  --> SupplyChainMember newOwner
+}
+
+event OnwerShipTransferedEvent {
+  --> Product product
+  --> SupplyChainMember oldOwner
+  --> SupplyChainMember newOwner
+}
