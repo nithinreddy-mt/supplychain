@@ -1,6 +1,8 @@
-setup function error free code --> https://github.com/ovaiskale/supplychain/tree/master/original <br />
+script file setUpDemo function error free code --> Freshly Copy both script.js and model.cto file from https://github.com/ovaiskale/supplychain/tree/master/original <br /> <br />
 Changes made -> Inside setupDemo funciton removed the shipment creation and contract creation. <br />
-It was having error's in the way the contract was being created. For now test this function it will work fine. <br /> <br />
+It was having error's in the way the contract was being created.<br /> <br />
+
+**Steps done till CreateShipmentAndContract, other transactions yet to test** <br/><br/>
 
 Note: Most of the inputs are actually filled in by default by the playground UI. <br /> <br /> 
 Steps, imagine we are procuring wheat, manufacturing maggi, sending it to distributor: <br /><br />
