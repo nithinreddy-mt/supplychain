@@ -270,7 +270,7 @@ async function CreateShipmentAndContract(shipmentAndContract){
         console.log("Exists? " + exists);
         if (!exists)
             throw 'Shipment buyer does not exist.' 
-    }).then(function(exists){
+    }).then(async function(exists){
         // Check if shipment owner is also the owner of all the assets
         var assetExchanged = shipmentAndContract.assetExchanged;
         for (var i = 0; i < assetExchanged.length; i++) {
@@ -286,12 +286,12 @@ async function CreateShipmentAndContract(shipmentAndContract){
         }
         console.log("before creating");
         // after all the checks
-        CreateShipmentAndContractAuxiliar(shipmentAndContract);
-
+        await CreateShipmentAndContractAuxiliar(shipmentAndContract);
+        console.log("before Finally... ");
         return getAssetRegistry('org.logistics.testnet.ShipmentBatch')
     
     }).then(function(shipmentAssetRegistry){
-        //console.log("Finally... " + shipmentAssetRegistry);
+        console.log("Finally... " + shipmentAssetRegistry);
         return getAssetRegistry('org.logistics.testnet.OrderContract');
     });
     
@@ -624,5 +624,3 @@ async function TestTransaction(testParameters){
         emit(event);
     */
 }
-
-
